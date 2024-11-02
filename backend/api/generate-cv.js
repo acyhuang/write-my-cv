@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
   const { resume, jobDescription, messages } = req.body;
   
   const anthropic = new Anthropic({
-    apiKey: process.env.REACT_APP_ANTHROPIC_API_KEY,
+    apiKey: process.env.ANTHROPIC_API_KEY,
   });
 
   try {
@@ -54,7 +54,16 @@ router.post('/', async (req, res) => {
     });
 
     console.log('4. Received Anthropic response');
-    const jsonResponse = JSON.parse(response.content.join(''));
+    const responseContent = response.content[0].text;
+    console.log('Raw response:', responseContent);
+
+    let jsonResponse;
+    try {
+      jsonResponse = JSON.parse(responseContent);
+    } catch (error) {
+      console.error('JSON parsing error:', error);
+      throw new Error('Failed to parse AI response.');
+    }
 
     console.log('5. Parsed response successfully');
     res.json(jsonResponse);
