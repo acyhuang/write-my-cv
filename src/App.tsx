@@ -11,8 +11,14 @@ function App() {
     <div className="flex flex-col h-screen overflow-hidden">
       <Header />
       <div className="flex flex-1 overflow-hidden">
-        <ContextContainer onCoverLetterGenerated={setCoverLetter} />
-        <CanvasContainer coverLetter={coverLetter} />
+        <ContextContainer 
+          onCoverLetterGenerated={setCoverLetter}
+          currentCoverLetter={coverLetter}
+        />
+        <CanvasContainer 
+          coverLetter={coverLetter}
+          onCoverLetterChange={setCoverLetter}
+        />
       </div>
     </div>
   );

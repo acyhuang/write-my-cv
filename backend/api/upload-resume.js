@@ -6,7 +6,7 @@ async function parseResume(fileBuffer) {
     return { text: data.text };
   } catch (error) {
     console.error('Error parsing PDF:', error);
-    throw new Error('Failed to parse PDF file');
+    throw new Error('Invalid PDF format or corrupted file');
   }
 }
 

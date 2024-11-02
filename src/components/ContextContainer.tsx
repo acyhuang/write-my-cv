@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import ArrowUpIcon from '../assets/Arrow up-circle.svg';
 import axios from 'axios';
 
 interface ContextContainerProps {
   onCoverLetterGenerated: (coverLetter: string) => void;
+  currentCoverLetter?: string;
 }
 
-function ContextContainer({ onCoverLetterGenerated }: ContextContainerProps) {
+function ContextContainer({ onCoverLetterGenerated, currentCoverLetter }: ContextContainerProps) {
   const [resume, setResume] = useState<string>('');
   const [jobDescription, setJobDescription] = useState<string>('');
   const [messages, setMessages] = useState<Array<{ sender: string; text: string }>>([]);
   const [message, setMessage] = useState<string>('');
+  const [isSending, setIsSending] = useState(false);
 
   const handleResumeUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -20,7 +22,7 @@ function ContextContainer({ onCoverLetterGenerated }: ContextContainerProps) {
       
       try {
         const response = await axios.post('/api/upload-resume', formData);
-        console.log('Resume text:', response.data.text); 
+        console.log('Resume text parsed'); 
         setResume(response.data.text);
       } catch (error) {
         console.error('Error uploading resume:', error);
@@ -31,33 +33,44 @@ function ContextContainer({ onCoverLetterGenerated }: ContextContainerProps) {
   // TODO: Called every time the job description textarea is changed, make this more efficient?
   const handleJobDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setJobDescription(event.target.value);
-    console.log('Job description:', event.target.value); 
+    console.log('Job description updated'); 
   };
 
-  const handleSendMessage = async () => {
-    console.log('handleSendMessage called');
-    if (!message.trim()) return;
+  const handleSendMessage = useCallback(async () => {
+    if (isSending || !message.trim()) return;
+    setIsSending(true);
 
     const userMessage = { sender: 'user', text: message };
-    setMessages([...messages, userMessage]);
-    setMessage('');
+    
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
 
+    try {
+      await sendGenerateCvRequest([...messages, userMessage]);
+    } finally {
+      setIsSending(false);
+    }
+
+    setMessage('');
+  }, [message, messages, isSending]);
+
+  const sendGenerateCvRequest = async (updatedMessages: Array<{ sender: string; text: string }>) => {
     try {
       console.log('Sending request to /api/generate-cv');
       const response = await axios.post('/api/generate-cv', {
         resume,
         jobDescription,
-        messages: [...messages, userMessage],
+        messages: updatedMessages,
+        currentCoverLetter: currentCoverLetter || '',
       });
 
       const explanationMessage = { sender: 'assistant', text: response.data.message };
-      setMessages([...messages, userMessage, explanationMessage]);
+      setMessages((prevMessages) => [...prevMessages, explanationMessage]);
       
       onCoverLetterGenerated(response.data.coverLetter);
     } catch (error) {
       console.error('Error generating cover letter:', error);
       const errorMessage = { sender: 'assistant', text: 'Sorry, there was an error generating the cover letter.' };
-      setMessages([...messages, userMessage, errorMessage]);
+      setMessages((prevMessages) => [...prevMessages, errorMessage]);
     }
   };
 
@@ -82,19 +95,22 @@ function ContextContainer({ onCoverLetterGenerated }: ContextContainerProps) {
       </div>
       <div className="chat-container flex flex-col flex-grow overflow-hidden pt-4 pb-4 border-b border-blue-200">
         <div className="flex-grow overflow-y-auto">
-          <div className="chat-history-container">
+          <div className="chat-history-container text-sm">
             {messages.map((msg, index) => (
-              <div key={index} className={`message ${msg.sender === 'AI' ? 'ai-message' : 'user-message'}`}>
-                <p>{`${msg.sender}: ${msg.text}`}</p>
+              <div 
+                key={index} 
+                className={`message ${msg.sender === 'AI' ? 'ai-message' : 'user-message'} mb-4`}
+              >
+                <p><span className="font-bold">{msg.sender}</span>: {msg.text}</p>
               </div>
             ))}
           </div>
         </div>
-        <div className="flex flex-row items-center mt-auto border border-green-300">
+        <div className="flex flex-row items-center mt-auto">
           <textarea
             className="message-input-field text-xs w-full rounded-xl border border-gray-300 p-2 resize-none"
             rows={2}
-            placeholder="Write me a cover letter..."
+            placeholder="[user instruction]..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}

@@ -24,3 +24,9 @@ code {
   font-size: 12px;
   font-weight: 500;
 }
+
+textarea:focus,
+input:focus,
+select:focus {
+    outline: none;
+}

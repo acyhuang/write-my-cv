@@ -38,3 +38,6 @@ This approach allows for efficient state management without the overhead of addi
 - AI Integration: Claude API using TypeScript SDK
 
 This structure allows for a seamless workflow where users can provide context, interact with the AI to generate content, and customize their cover letter all within a single interface, while maintaining a simple and efficient state management approach.
+
+backend: port 4000
+frontend: port 3000
