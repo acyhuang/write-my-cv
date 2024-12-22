@@ -37,6 +37,11 @@ app.use((req, res, next) => {
 app.use(express.json());
 console.log('JSON middleware enabled');
 
+// Add a test route
+app.get('/', (req, res) => {
+  res.json({ message: 'Backend server is running!' });
+});
+
 // Handle resume upload
 app.post('/api/upload-resume', upload.single('resume'), async (req, res) => {
   try {
