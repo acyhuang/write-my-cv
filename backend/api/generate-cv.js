@@ -96,9 +96,24 @@ Format your response as a JSON object with these exact keys:
     console.error('6. Error occurred:', {
       name: error.name,
       message: error.message,
-      stack: error.stack
+      stack: error.stack,
+      response: error.response?.data,
+      status: error.response?.status
     });
-    res.status(500).json({ error: 'Failed to generate cover letter' });
+
+    if (error instanceof Anthropic.APIError) {
+      console.error('Anthropic API Error:', {
+        status: error.status,
+        message: error.message,
+        type: error.type
+      });
+    }
+
+    res.status(500).json({ 
+      error: 'Failed to generate cover letter',
+      details: error.message,
+      type: error.constructor.name
+    });
   }
 });
 

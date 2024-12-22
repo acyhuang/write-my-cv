@@ -9,7 +9,7 @@ complete 2024-11-02
 - Different LLM interface (version history > chatbot)
 
 ## next actions
-- add placeholder instructions: "1 Graf expressing interest in company (Force Factor, nutritional supplements) 1 graf expressing general fit 1 graf w/ bullet list of results 1 graf thanking for time / consideration"
+- fix 500 error on second message
 - add send feedback button
 - UI fixes
     - [X] max width of sidebar

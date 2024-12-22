@@ -49,11 +49,16 @@ export function ChatInterface({
       
       setMessages((prevMessages: Message[]) => [...prevMessages, explanationMessage]);
       onCoverLetterGenerated(response.data.coverLetter);
-    } catch (error) {
-      console.error('Error generating cover letter:', error);
+    } catch (error: any) {
+      console.error('Error generating cover letter:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        statusText: error.response?.statusText
+      });
       const errorMessage: Message = { 
         sender: 'assistant', 
-        text: 'Sorry, there was an error generating the cover letter.' 
+        text: `Error: ${error.response?.data?.error || error.message || 'Unknown error occurred'}` 
       };
       setMessages((prevMessages: Message[]) => [...prevMessages, errorMessage]);
     }
