@@ -37,7 +37,7 @@ This approach allows for efficient state management without the overhead of addi
 - Frontend: React with TypeScript
 - AI Integration: Claude API using TypeScript SDK
 
-This structure allows for a seamless workflow where users can provide context, interact with the AI to generate content, and customize their cover letter all within a single interface, while maintaining a simple and efficient state management approach.
+Deployment on Vercel, via a Git repo.
 
-backend: port 4000
-frontend: port 3000
+frontend: http://localhost:3000, https://write-my-cv.vercel.app
+backend: http://localhost:4000, https://write-my-cv-api.vercel.app

@@ -11,7 +11,11 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // Enable CORS
-app.use(cors());
+app.use(cors({
+  origin: ['https://write-my-cv.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 
 // Set up Multer for file uploads
 const storage = multer.memoryStorage();

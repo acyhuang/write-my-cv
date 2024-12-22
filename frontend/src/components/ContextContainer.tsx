@@ -14,6 +14,8 @@ function ContextContainer({ onCoverLetterGenerated, currentCoverLetter }: Contex
   const [message, setMessage] = useState<string>('');
   const [isSending, setIsSending] = useState(false);
 
+  const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+
   const handleResumeUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -21,7 +23,7 @@ function ContextContainer({ onCoverLetterGenerated, currentCoverLetter }: Contex
       formData.append('resume', file);
       
       try {
-        const response = await axios.post('/api/upload-resume', formData);
+        const response = await axios.post(`${API_BASE_URL}/api/upload-resume`, formData);
         console.log('Resume text parsed'); 
         setResume(response.data.text);
       } catch (error) {
@@ -56,7 +58,7 @@ function ContextContainer({ onCoverLetterGenerated, currentCoverLetter }: Contex
   const sendGenerateCvRequest = async (updatedMessages: Array<{ sender: string; text: string }>) => {
     try {
       console.log('Sending request to /api/generate-cv');
-      const response = await axios.post('/api/generate-cv', {
+      const response = await axios.post(`${API_BASE_URL}/api/generate-cv`, {
         resume,
         jobDescription,
         messages: updatedMessages,
