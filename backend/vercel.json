@@ -9,13 +9,25 @@
   "routes": [
     {
       "src": "/api/upload-resume",
-      "methods": ["POST"],
-      "dest": "server.js"
+      "methods": ["POST", "OPTIONS"],
+      "dest": "server.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://write-my-kp1fjo2vr-acyhuangs-projects.vercel.app",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Credentials": "true"
+      }
     },
     {
       "src": "/api/generate-cv",
-      "methods": ["POST"],
-      "dest": "server.js"
+      "methods": ["POST", "OPTIONS"],
+      "dest": "server.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://write-my-kp1fjo2vr-acyhuangs-projects.vercel.app",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Credentials": "true"
+      }
     },
     {
       "src": "/(.*)",

@@ -12,9 +12,14 @@ const PORT = process.env.PORT || 4000;
 
 // Enable CORS
 app.use(cors({
-  origin: ['https://write-my-cv.vercel.app', 'http://localhost:3000'],
-  methods: ['GET', 'POST'],
-  credentials: true
+  origin: [
+    'https://write-my-cv.vercel.app',
+    'https://write-my-kp1fjo2vr-acyhuangs-projects.vercel.app',
+    'http://localhost:3000'
+  ],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type']
 }));
 
 // Set up Multer for file uploads
