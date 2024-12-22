@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import ArrowUpIcon from '../assets/Arrow up-circle.svg';
 import axios from 'axios';
 
@@ -11,7 +11,7 @@ function ContextContainer({ onCoverLetterGenerated, currentCoverLetter }: Contex
   const [resume, setResume] = useState<string>('');
   const [jobDescription, setJobDescription] = useState<string>('');
   const [messages, setMessages] = useState<Array<{ sender: string; text: string }>>([]);
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState<string>('Paragraph 1 expresses interest in the company. Paragraph 2 explains fit with the role and overview of qualifications. Paragraph 3 contains a bulleted list of relevant outcomes from my resume. Paragraph 4 thanks the reader for their time and consideration.');
   const [isSending, setIsSending] = useState(false);
 
   const API_BASE_URL = process.env.REACT_APP_API_URL || '';
@@ -76,8 +76,20 @@ function ContextContainer({ onCoverLetterGenerated, currentCoverLetter }: Contex
     }
   };
 
+  const adjustTextareaHeight = (element: HTMLTextAreaElement) => {
+    element.style.height = 'auto';
+    element.style.height = `${element.scrollHeight}px`;
+  };
+
+  React.useEffect(() => {
+    const textarea = document.querySelector('.message-input-field') as HTMLTextAreaElement;
+    if (textarea) {
+      adjustTextareaHeight(textarea);
+    }
+  }, [message]);
+
   return (
-    <div className="bg-gray-100 w-1/3 p-6 border-r border-gray-200">
+    <div className="bg-gray-100 w-1/3 max-w-lg p-6 border-r border-gray-200">
       <div className="resume-container flex justify-between items-center w-full border-b border-gray-200 pb-4">
         <p className="body-2">RESUME</p>
         <label className="upload-resume-btn px-4 py-2 bg-gray-200 text-gray-600 rounded-full cursor-pointer">
@@ -110,12 +122,18 @@ function ContextContainer({ onCoverLetterGenerated, currentCoverLetter }: Contex
         </div>
         <div className="flex flex-row items-center mt-auto">
           <textarea
-            className="message-input-field text-xs w-full rounded-xl border border-gray-300 p-2 resize-none"
-            rows={2}
-            placeholder="[user instruction]..."
+            className="message-input-field text-xs w-full rounded-xl border border-gray-300 p-2 resize-none overflow-hidden"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
+            onChange={(e) => {
+              setMessage(e.target.value);
+              adjustTextareaHeight(e.target);
+            }}
+            onKeyDown={(e) => { 
+              if (e.key === 'Enter' && !e.shiftKey) { 
+                e.preventDefault(); 
+                handleSendMessage(); 
+              } 
+            }}
           ></textarea>
           <button
             className="send-button w-10 h-10 text-white rounded-full flex items-center justify-center ml-2"
