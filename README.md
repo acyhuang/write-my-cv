@@ -9,4 +9,9 @@ complete 2024-11-02
 - Different LLM interface (version history > chatbot)
 
 ## next actions
-- Fix Vercel deployment (backend not hooked up right?)
+- look at OpenAI canvas for interface
+- add version history
+- fix resposniveness
+- highlight edits? 
+- prevent LLM from overwriting user changes
+- add send feedback button

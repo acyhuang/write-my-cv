@@ -40,7 +40,7 @@ Format your response as a JSON object with these exact keys:
 }
     `;
     
-    // console.log('Prompt:', prompt);
+    console.log('Prompt:', prompt);
 
     const history = [
       {
